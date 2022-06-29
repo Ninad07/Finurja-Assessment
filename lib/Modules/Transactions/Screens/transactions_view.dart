@@ -61,33 +61,93 @@ class _TransactionsViewState extends State<TransactionsView> {
     return BlocBuilder<TransactionScreenBloc, TransactionScreenState>(
       builder: (context, state) {
         TransactionModel model = state.transactionModel;
-        return SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          child: SizedBox(
-            child: Column(
-              // mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                const SizedBox(height: 15),
-                Container(
-                  constraints: const BoxConstraints(
-                    minHeight: 130,
-                  ),
-                  decoration: BoxDecoration(
-                      border: Border(
-                          bottom: BorderSide(color: Colors.grey.shade300))),
-                  child: Column(
-                    children: [
-                      _getLogoNameBalanceDetails(model),
-                      const SizedBox(height: 10),
-                      _getAccountTypeNumberDetails(model),
-                    ],
-                  ),
+        return SizedBox(
+          width: MediaQuery.of(context).size.width,
+          child: Column(
+            children: [
+              const SizedBox(height: 15),
+              Container(
+                constraints: BoxConstraints(
+                  minHeight: 130,
+                  maxWidth: MediaQuery.of(context).size.width - 20,
                 ),
-              ],
-            ),
+                decoration: BoxDecoration(
+                    border: Border(
+                        bottom: BorderSide(color: Colors.grey.shade300))),
+                child: Column(
+                  children: [
+                    _getLogoNameBalanceDetails(model),
+                    const SizedBox(height: 10),
+                    _getAccountTypeNumberDetails(model),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 10),
+              _getFilterWidget(),
+              const SizedBox(height: 10),
+              _getTransactionsData(model, state, context),
+            ],
           ),
         );
       },
+    );
+  }
+
+  // Filter Widget
+  _getFilterWidget() {
+    return Container(
+      constraints: const BoxConstraints(
+        minHeight: 130,
+      ),
+      padding: const EdgeInsets.only(left: 20),
+      decoration: BoxDecoration(
+          border: Border(bottom: BorderSide(color: Colors.grey.shade300))),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              // const SizedBox(),
+              SizedBox(
+                child: Text(
+                  "Last 10 Transactions",
+                  style: TextStyle(
+                    color: Colors.grey.shade800,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ),
+              const SizedBox(
+                width: 30,
+              ),
+              IconButton(
+                  onPressed: () {},
+                  icon: Icon(
+                    Icons.filter_alt,
+                    color: Colors.grey.shade800,
+                  )),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  //? Transactions Data
+  Widget _getTransactionsData(TransactionModel model,
+      TransactionScreenState state, BuildContext context) {
+    return Expanded(
+      child: Container(
+        margin: const EdgeInsets.only(left: 10, right: 10, bottom: 5),
+        height: MediaQuery.of(context).size.height,
+        color: Colors.grey,
+        child: ListView.builder(
+            itemCount: model.transactions.length,
+            itemBuilder: (context, int index) {
+              return Container();
+            }),
+      ),
     );
   }
 
@@ -95,16 +155,15 @@ class _TransactionsViewState extends State<TransactionsView> {
   Widget _getLogoNameBalanceDetails(TransactionModel model) {
     return Container(
       alignment: Alignment.center,
-      constraints: BoxConstraints(
+      constraints: const BoxConstraints(
         minHeight: 50,
-        maxWidth: MediaQuery.of(context).size.width - 20,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Row(
             children: [
-              const SizedBox(width: 20),
+              const SizedBox(width: 10),
               SizedBox(
                 height: 25,
                 width: 25,
@@ -134,14 +193,11 @@ class _TransactionsViewState extends State<TransactionsView> {
 
   //? Account Type and Account Number
   Widget _getAccountTypeNumberDetails(TransactionModel model) {
-    return Container(
-      constraints: BoxConstraints(
-        maxWidth: MediaQuery.of(context).size.width - 20,
-      ),
+    return SizedBox(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          const SizedBox(width: 20),
+          const SizedBox(width: 10),
           Text(
             model.accountType,
             style: TextStyle(
