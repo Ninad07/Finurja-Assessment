@@ -12,6 +12,25 @@ class TransactionScreenBloc
       : super(TransactionScreenState(transactionModel: TransactionModel())) {
     on<LoadData>(_loadData);
     on<UpdateSliderRanges>(_updateSliderRanges);
+    on<UpdateCreditFilterValue>(_updateCreditFilterValue);
+    on<UpdateDebitFilterValue>(_updateDebitFilterValue);
+    on<ToggleTransactionDateFilterValue>(_toggleTransactionDateFilterValue);
+  }
+
+  //? Toggle Transaction Date Filter Value Event
+  _toggleTransactionDateFilterValue(ToggleTransactionDateFilterValue event,
+      Emitter<TransactionScreenState> emit) {
+    emit(state.copyWith(latestToOldest: !state.latestToOldest));
+  }
+
+  _updateCreditFilterValue(
+      UpdateCreditFilterValue event, Emitter<TransactionScreenState> emit) {
+    emit(state.copyWith(credit: !state.credit));
+  }
+
+  _updateDebitFilterValue(
+      UpdateDebitFilterValue event, Emitter<TransactionScreenState> emit) {
+    emit(state.copyWith(debit: !state.debit));
   }
 
   //? Load Transactions of a particular user

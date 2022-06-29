@@ -207,7 +207,13 @@ class _TransactionsViewState extends State<TransactionsView> {
                       materialTapTargetSize: MaterialTapTargetSize.padded,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(50)),
-                      onChanged: (val) {},
+                      onChanged: (val) {
+                        if (!state.latestToOldest) {
+                          context
+                              .read<TransactionScreenBloc>()
+                              .add(ToggleTransactionDateFilterValue());
+                        }
+                      },
                     ),
                     const SizedBox(width: 5),
                     const Text("Latest To Oldest"),
@@ -225,7 +231,13 @@ class _TransactionsViewState extends State<TransactionsView> {
                       materialTapTargetSize: MaterialTapTargetSize.padded,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(50)),
-                      onChanged: (val) {},
+                      onChanged: (val) {
+                        if (state.latestToOldest) {
+                          context
+                              .read<TransactionScreenBloc>()
+                              .add(ToggleTransactionDateFilterValue());
+                        }
+                      },
                     ),
                     const SizedBox(width: 5),
                     const Text("Oldest To Latest"),
@@ -256,7 +268,11 @@ class _TransactionsViewState extends State<TransactionsView> {
                       value: state.credit,
                       activeColor: Colors.blue.shade800,
                       materialTapTargetSize: MaterialTapTargetSize.padded,
-                      onChanged: (val) {},
+                      onChanged: (val) {
+                        context
+                            .read<TransactionScreenBloc>()
+                            .add(UpdateCreditFilterValue());
+                      },
                     ),
                     const SizedBox(width: 5),
                     const Text("Credit"),
@@ -272,7 +288,11 @@ class _TransactionsViewState extends State<TransactionsView> {
                       value: state.debit,
                       activeColor: Colors.blue.shade800,
                       materialTapTargetSize: MaterialTapTargetSize.padded,
-                      onChanged: (val) {},
+                      onChanged: (val) {
+                        context
+                            .read<TransactionScreenBloc>()
+                            .add(UpdateDebitFilterValue());
+                      },
                     ),
                     const SizedBox(width: 5),
                     const Text("Debit"),
