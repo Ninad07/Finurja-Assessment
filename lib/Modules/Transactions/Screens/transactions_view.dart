@@ -87,7 +87,7 @@ class _TransactionsViewState extends State<TransactionsView> {
               const SizedBox(height: 10),
               _getFilterWidget(state),
               const SizedBox(height: 10),
-              _getTransactionsData(model, state, context),
+              _getTransactionsData(),
             ],
           ),
         );
@@ -367,7 +367,9 @@ class _TransactionsViewState extends State<TransactionsView> {
             style: TextButton.styleFrom(
               backgroundColor: Colors.blue.shade800,
             ),
-            onPressed: () {},
+            onPressed: () {
+              context.read<TransactionScreenBloc>().add(ApplyFilters());
+            },
             child: const Text(
               "Apply",
               style: TextStyle(color: Colors.white),
@@ -412,11 +414,7 @@ class _TransactionsViewState extends State<TransactionsView> {
   }
 
   //? Transactions Data
-  Widget _getTransactionsData(TransactionModel model,
-      TransactionScreenState state, BuildContext context) {
-    var datesList = state.datesList;
-    var mapToWidget = state.mapToWidget;
-
+  Widget _getTransactionsData() {
     return Expanded(
       child: Container(
         margin: const EdgeInsets.only(left: 10, right: 10, bottom: 5),
@@ -424,7 +422,8 @@ class _TransactionsViewState extends State<TransactionsView> {
         // color: Colors.grey,
         child: ListView.builder(
             physics: const BouncingScrollPhysics(),
-            itemCount: datesList.length,
+            itemCount:
+                context.read<TransactionScreenBloc>().state.datesList.length,
             itemBuilder: (context, int index) {
               return Column(
                 children: [
@@ -442,7 +441,10 @@ class _TransactionsViewState extends State<TransactionsView> {
                             Container(
                               alignment: Alignment.centerLeft,
                               child: Text(
-                                datesList[index],
+                                context
+                                    .read<TransactionScreenBloc>()
+                                    .state
+                                    .datesList[index],
                                 textAlign: TextAlign.left,
                                 style: const TextStyle(
                                   color: Colors.grey,
@@ -454,7 +456,14 @@ class _TransactionsViewState extends State<TransactionsView> {
                               height: 10,
                             ),
                           ] +
-                          mapToWidget[datesList[index]],
+                          context
+                                  .read<TransactionScreenBloc>()
+                                  .state
+                                  .mapToWidget[
+                              context
+                                  .read<TransactionScreenBloc>()
+                                  .state
+                                  .datesList[index]],
                     ),
                   ),
                   const SizedBox(height: 15),

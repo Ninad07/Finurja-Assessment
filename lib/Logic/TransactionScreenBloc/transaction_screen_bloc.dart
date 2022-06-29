@@ -17,8 +17,119 @@ class TransactionScreenBloc
     on<UpdateDebitFilterValue>(_updateDebitFilterValue);
     on<ToggleTransactionDateFilterValue>(_toggleTransactionDateFilterValue);
     on<ResetFilters>(_resetFilters);
+    on<ApplyFilters>(_applyFilters);
   }
 
+  //? Apply All Filters
+  _applyFilters(ApplyFilters event, Emitter<TransactionScreenState> emit) {
+    var datesList = [];
+    var mapToWidget = {};
+    for (String key in state.transactionModel.transactions.keys) {
+      datesList.add(key);
+    }
+
+    // Oldest To Latest Filter Selected
+    if (!state.latestToOldest) {
+      datesList.sort(((a, b) => a.compareTo(b)));
+    } else {
+      datesList.sort(((a, b) => b.compareTo(a)));
+    }
+
+    Map<String, List> transactionDataMap = {};
+    for (String date in datesList) {
+      List<List> transactionDataList = [];
+      for (var transaction in state.transactionModel.transactions[date]!) {
+        var list = [
+          transaction["recipient"],
+          transaction["amount"],
+          state.credit
+              ? (transaction["credit"] ? "2" : "1")
+              : (state.debit
+                  ? (transaction["credit"] ? "1" : "2")
+                  : (transaction["credit"] ? "2" : "1"))
+        ];
+
+        if ((state.startAmount > 0 || state.endAmount < 100000)) {
+          print("${double.parse(transaction["amount"])}  ${state.startAmount}");
+          if (double.parse(transaction["amount"]) >= state.startAmount &&
+              double.parse(transaction["amount"]) <= state.endAmount) {
+            print("YES");
+            transactionDataList.add(list);
+          }
+        } else {
+          transactionDataList.add(list);
+        }
+      }
+
+      if (transactionDataList.isNotEmpty) {
+        if (state.credit != state.debit) {
+          if (state.credit) {
+            transactionDataList.sort(((a, b) => a[2].compareTo(b[2])));
+          } else {
+            transactionDataList.sort(((a, b) => b[2].compareTo(a[2])));
+          }
+        }
+
+        transactionDataMap.putIfAbsent(date, () => []);
+        transactionDataMap[date] = transactionDataList;
+      }
+    }
+
+    for (String date in datesList) {
+      if (!transactionDataMap.containsKey(date) ||
+          transactionDataMap[date] == null) continue;
+      List<Widget> widgetsList = [];
+      for (var transaction in transactionDataMap[date]!) {
+        var dataWidget = Container(
+            margin: const EdgeInsets.only(left: 10, right: 5),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  transaction[0],
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                Row(
+                  children: [
+                    Text(
+                      "Rs ${transaction[1]}",
+                      style: TextStyle(
+                        color:
+                            transaction[2] == "2" ? Colors.green : Colors.red,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Icon(
+                      transaction[2] == "2"
+                          ? Icons.arrow_downward
+                          : Icons.arrow_upward,
+                      color: transaction[2] == "2" ? Colors.green : Colors.red,
+                      size: 15,
+                    )
+                  ],
+                ),
+              ],
+            ));
+
+        widgetsList.add(dataWidget);
+        widgetsList.add(const SizedBox(height: 15));
+      }
+
+      widgetsList.add(const SizedBox(height: 10));
+      mapToWidget[date] = widgetsList;
+    }
+
+    datesList.clear();
+    for (String date in mapToWidget.keys) {
+      datesList.add(date);
+    }
+    emit(state.copyWith(datesList: datesList, mapToWidget: mapToWidget));
+  }
+
+  //? Reset All Filters
   _resetFilters(ResetFilters event, Emitter<TransactionScreenState> emit) {
     emit(
       state.copyWith(
