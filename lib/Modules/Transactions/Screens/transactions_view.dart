@@ -127,8 +127,9 @@ class _TransactionsViewState extends State<TransactionsView> {
                   onPressed: () {
                     showModalBottomSheet(
                         context: context,
+                        isScrollControlled: true,
                         constraints: BoxConstraints(
-                          minHeight: MediaQuery.of(context).size.height,
+                          minHeight: MediaQuery.of(context).size.height - 250,
                         ),
                         shape: const RoundedRectangleBorder(
                             borderRadius: BorderRadius.only(
@@ -154,7 +155,7 @@ class _TransactionsViewState extends State<TransactionsView> {
     return BlocBuilder<TransactionScreenBloc, TransactionScreenState>(
         builder: (context, state) {
       return Container(
-        height: MediaQuery.of(context).size.height,
+        height: MediaQuery.of(context).size.height - 250,
         width: MediaQuery.of(context).size.width,
         decoration: const BoxDecoration(
           color: Colors.white,
@@ -164,7 +165,7 @@ class _TransactionsViewState extends State<TransactionsView> {
         child: Padding(
           padding: const EdgeInsets.all(15),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               const SizedBox(height: 10),
               Container(
@@ -299,11 +300,60 @@ class _TransactionsViewState extends State<TransactionsView> {
 
               const SizedBox(height: 45),
               _getRangeSliderWidget(),
+              const SizedBox(height: 10),
+              _getApplyResetButtonWidget(),
             ],
           ),
         ),
       );
     });
+  }
+
+  //? Apply Reset Button Widget
+  Widget _getApplyResetButtonWidget() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Container(
+          height: 50,
+          width: MediaQuery.of(context).size.width / 2.5,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            border: Border.all(color: Colors.blue.shade800),
+            borderRadius: BorderRadius.circular(5),
+          ),
+          child: ElevatedButton(
+            style: TextButton.styleFrom(
+              backgroundColor: Colors.white,
+            ),
+            onPressed: () {},
+            child: Text(
+              "Reset",
+              style: TextStyle(color: Colors.blue.shade800),
+            ),
+          ),
+        ),
+        Container(
+          height: 50,
+          width: MediaQuery.of(context).size.width / 2.5,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            border: Border.all(color: Colors.blue.shade800),
+            borderRadius: BorderRadius.circular(5),
+          ),
+          child: ElevatedButton(
+            style: TextButton.styleFrom(
+              backgroundColor: Colors.blue.shade800,
+            ),
+            onPressed: () {},
+            child: Text(
+              "Apply",
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   //? Range Slider
