@@ -42,18 +42,12 @@ class TransactionScreenBloc
         var list = [
           transaction["recipient"],
           transaction["amount"],
-          state.credit
-              ? (transaction["credit"] ? "2" : "1")
-              : (state.debit
-                  ? (transaction["credit"] ? "1" : "2")
-                  : (transaction["credit"] ? "2" : "1"))
+          transaction["credit"] ? "2" : "1",
         ];
 
         if ((state.startAmount > 0 || state.endAmount < 100000)) {
-          print("${double.parse(transaction["amount"])}  ${state.startAmount}");
           if (double.parse(transaction["amount"]) >= state.startAmount &&
               double.parse(transaction["amount"]) <= state.endAmount) {
-            print("YES");
             transactionDataList.add(list);
           }
         } else {
@@ -64,9 +58,9 @@ class TransactionScreenBloc
       if (transactionDataList.isNotEmpty) {
         if (state.credit != state.debit) {
           if (state.credit) {
-            transactionDataList.sort(((a, b) => a[2].compareTo(b[2])));
-          } else {
             transactionDataList.sort(((a, b) => b[2].compareTo(a[2])));
+          } else {
+            transactionDataList.sort(((a, b) => a[2].compareTo(b[2])));
           }
         }
 

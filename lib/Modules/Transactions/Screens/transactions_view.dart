@@ -425,6 +425,12 @@ class _TransactionsViewState extends State<TransactionsView> {
             itemCount:
                 context.read<TransactionScreenBloc>().state.datesList.length,
             itemBuilder: (context, int index) {
+              var widgetsList = context
+                      .read<TransactionScreenBloc>()
+                      .state
+                      .mapToWidget[
+                  context.read<TransactionScreenBloc>().state.datesList[index]];
+
               return Column(
                 children: [
                   Container(
@@ -456,14 +462,7 @@ class _TransactionsViewState extends State<TransactionsView> {
                               height: 10,
                             ),
                           ] +
-                          context
-                                  .read<TransactionScreenBloc>()
-                                  .state
-                                  .mapToWidget[
-                              context
-                                  .read<TransactionScreenBloc>()
-                                  .state
-                                  .datesList[index]],
+                          widgetsList,
                     ),
                   ),
                   const SizedBox(height: 15),
