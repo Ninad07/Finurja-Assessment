@@ -83,7 +83,7 @@ class _TransactionsViewState extends State<TransactionsView> {
                 ),
               ),
               const SizedBox(height: 10),
-              _getFilterWidget(),
+              _getFilterWidget(state),
               const SizedBox(height: 10),
               _getTransactionsData(model, state, context),
             ],
@@ -94,7 +94,7 @@ class _TransactionsViewState extends State<TransactionsView> {
   }
 
   // Filter Widget
-  _getFilterWidget() {
+  _getFilterWidget(TransactionScreenState state) {
     return Container(
       constraints: const BoxConstraints(
         minHeight: 130,
@@ -122,7 +122,20 @@ class _TransactionsViewState extends State<TransactionsView> {
                 width: 30,
               ),
               IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    showModalBottomSheet(
+                        context: context,
+                        constraints: BoxConstraints(
+                          minHeight: MediaQuery.of(context).size.height,
+                        ),
+                        shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(5),
+                                topRight: Radius.circular(5))),
+                        builder: (BuildContext context) {
+                          return _filterWindow(context);
+                        });
+                  },
                   icon: Icon(
                     Icons.filter_alt,
                     color: Colors.grey.shade800,
@@ -134,63 +147,164 @@ class _TransactionsViewState extends State<TransactionsView> {
     );
   }
 
+  //? Filter Window
+  Widget _filterWindow(BuildContext context) {
+    return BlocBuilder<TransactionScreenBloc, TransactionScreenState>(
+        builder: (context, state) {
+      return Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(5), topRight: Radius.circular(5)),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(15),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const SizedBox(height: 10),
+              Container(
+                width: MediaQuery.of(context).size.width,
+                height: 40,
+                decoration: BoxDecoration(
+                    border: Border(
+                  bottom: BorderSide(color: Colors.grey.shade300),
+                )),
+                child: const Text(
+                  "Sort & Filter",
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 22),
+                ),
+              ),
+              const SizedBox(height: 15),
+              Container(
+                margin: const EdgeInsets.only(left: 10),
+                width: MediaQuery.of(context).size.width,
+                child: Text(
+                  "Sort By Time",
+                  style: TextStyle(
+                    color: Colors.grey.shade800,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              SizedBox(
+                height: 20,
+                child: Row(
+                  children: [
+                    Checkbox(
+                      value: state.latestToOldest,
+                      activeColor: Colors.blue.shade800,
+                      materialTapTargetSize: MaterialTapTargetSize.padded,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(50)),
+                      onChanged: (val) {},
+                    ),
+                    const SizedBox(width: 5),
+                    const Text("Latest To Oldest"),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 10),
+              SizedBox(
+                height: 20,
+                child: Row(
+                  children: [
+                    Checkbox(
+                      value: !state.latestToOldest,
+                      activeColor: Colors.blue.shade800,
+                      materialTapTargetSize: MaterialTapTargetSize.padded,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(50)),
+                      onChanged: (val) {},
+                    ),
+                    const SizedBox(width: 5),
+                    const Text("Oldest To Latest"),
+                  ],
+                ),
+              ),
+
+              // Filter By
+              const SizedBox(height: 15),
+              Container(
+                margin: const EdgeInsets.only(left: 10),
+                width: MediaQuery.of(context).size.width,
+                child: Text(
+                  "Filter By",
+                  style: TextStyle(
+                    color: Colors.grey.shade800,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              SizedBox(
+                height: 20,
+                child: Row(
+                  children: [
+                    Checkbox(
+                      value: state.credit,
+                      activeColor: Colors.blue.shade800,
+                      materialTapTargetSize: MaterialTapTargetSize.padded,
+                      onChanged: (val) {},
+                    ),
+                    const SizedBox(width: 5),
+                    const Text("Credit"),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 10),
+              SizedBox(
+                height: 20,
+                child: Row(
+                  children: [
+                    Checkbox(
+                      value: state.debit,
+                      activeColor: Colors.blue.shade800,
+                      materialTapTargetSize: MaterialTapTargetSize.padded,
+                      onChanged: (val) {},
+                    ),
+                    const SizedBox(width: 5),
+                    const Text("Debit"),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 10),
+              SizedBox(
+                height: 20,
+                child: Row(
+                  children: [
+                    Checkbox(
+                      value: state.amountBetween,
+                      activeColor: Colors.blue.shade800,
+                      materialTapTargetSize: MaterialTapTargetSize.padded,
+                      onChanged: (val) {},
+                    ),
+                    const SizedBox(width: 5),
+                    Text(
+                        "Amount Between ${state.startAmount} and ${state.endAmount}"),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    });
+  }
+
   //? Transactions Data
   Widget _getTransactionsData(TransactionModel model,
       TransactionScreenState state, BuildContext context) {
-    // Pre-Processing
-    var transactions = model.transactions;
-    var datesList = [], mapToWidget = {};
-
-    // Retireve all dates from the map
-    for (String key in transactions.keys) {
-      datesList.add(key);
-    }
-
-    // For building a Map of List which stores the list of widgets storing transaction details to be displayed on accordance with particular dates
-    for (String date in datesList) {
-      List<Widget> widgetsList = [];
-      for (var transaction in transactions[date]!) {
-        var dataWidget = Container(
-            margin: const EdgeInsets.only(left: 10, right: 5),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  transaction["recipient"],
-                  style: const TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                Row(
-                  children: [
-                    Text(
-                      "Rs ${transaction["amount"]}",
-                      style: TextStyle(
-                        color:
-                            transaction["credit"] ? Colors.green : Colors.red,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    Icon(
-                      transaction["credit"]
-                          ? Icons.arrow_downward
-                          : Icons.arrow_upward,
-                      color: transaction["credit"] ? Colors.green : Colors.red,
-                      size: 15,
-                    )
-                  ],
-                ),
-              ],
-            ));
-
-        widgetsList.add(dataWidget);
-        widgetsList.add(const SizedBox(height: 15));
-      }
-
-      widgetsList.add(const SizedBox(height: 10));
-      mapToWidget[date] = widgetsList;
-    }
+    var datesList = state.datesList;
+    var mapToWidget = state.mapToWidget;
 
     return Expanded(
       child: Container(
@@ -198,6 +312,7 @@ class _TransactionsViewState extends State<TransactionsView> {
         height: MediaQuery.of(context).size.height,
         // color: Colors.grey,
         child: ListView.builder(
+            physics: const BouncingScrollPhysics(),
             itemCount: datesList.length,
             itemBuilder: (context, int index) {
               return Column(
