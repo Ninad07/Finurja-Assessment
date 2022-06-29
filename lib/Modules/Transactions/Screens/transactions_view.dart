@@ -188,6 +188,7 @@ class _TransactionsViewState extends State<TransactionsView> {
         widgetsList.add(const SizedBox(height: 15));
       }
 
+      widgetsList.add(const SizedBox(height: 10));
       mapToWidget[date] = widgetsList;
     }
 
@@ -230,7 +231,7 @@ class _TransactionsViewState extends State<TransactionsView> {
                           mapToWidget[datesList[index]],
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 15),
                 ],
               );
             }),
