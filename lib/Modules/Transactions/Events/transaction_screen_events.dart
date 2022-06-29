@@ -30,3 +30,13 @@ class UpdateCreditFilterValue extends TransactionScreenEvent {
 class UpdateDebitFilterValue extends TransactionScreenEvent {
   UpdateDebitFilterValue();
 }
+
+//? Reset Filters
+class ResetFilters extends TransactionScreenEvent {
+  ResetFilters();
+}
+
+//? Apply Filters
+class ApplyFilters extends TransactionScreenEvent {
+  ApplyFilters();
+}

@@ -1,6 +1,7 @@
 import 'package:accountsapp/Data/Model/transaction_model.dart';
 import 'package:accountsapp/Data/Repository/Transactions/transactions_data.dart';
 import 'package:flutter/material.dart';
+import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 import '../../Modules/Transactions/Events/transaction_screen_events.dart';
 import '../../Modules/Transactions/Screens/transactions_screen_state.dart';
@@ -15,6 +16,19 @@ class TransactionScreenBloc
     on<UpdateCreditFilterValue>(_updateCreditFilterValue);
     on<UpdateDebitFilterValue>(_updateDebitFilterValue);
     on<ToggleTransactionDateFilterValue>(_toggleTransactionDateFilterValue);
+    on<ResetFilters>(_resetFilters);
+  }
+
+  _resetFilters(ResetFilters event, Emitter<TransactionScreenState> emit) {
+    emit(
+      state.copyWith(
+          latestToOldest: true,
+          credit: false,
+          debit: false,
+          startAmount: 0,
+          endAmount: 100000,
+          values: const SfRangeValues(0, 100000)),
+    );
   }
 
   //? Toggle Transaction Date Filter Value Event
@@ -23,11 +37,13 @@ class TransactionScreenBloc
     emit(state.copyWith(latestToOldest: !state.latestToOldest));
   }
 
+  //? Update Credit Filter Value
   _updateCreditFilterValue(
       UpdateCreditFilterValue event, Emitter<TransactionScreenState> emit) {
     emit(state.copyWith(credit: !state.credit));
   }
 
+  //? Update Debit Filter Value
   _updateDebitFilterValue(
       UpdateDebitFilterValue event, Emitter<TransactionScreenState> emit) {
     emit(state.copyWith(debit: !state.debit));

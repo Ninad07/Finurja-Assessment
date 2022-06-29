@@ -346,7 +346,9 @@ class _TransactionsViewState extends State<TransactionsView> {
             style: TextButton.styleFrom(
               backgroundColor: Colors.white,
             ),
-            onPressed: () {},
+            onPressed: () {
+              context.read<TransactionScreenBloc>().add(ResetFilters());
+            },
             child: Text(
               "Reset",
               style: TextStyle(color: Colors.blue.shade800),
@@ -366,7 +368,7 @@ class _TransactionsViewState extends State<TransactionsView> {
               backgroundColor: Colors.blue.shade800,
             ),
             onPressed: () {},
-            child: Text(
+            child: const Text(
               "Apply",
               style: TextStyle(color: Colors.white),
             ),
