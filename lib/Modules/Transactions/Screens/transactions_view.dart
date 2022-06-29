@@ -174,7 +174,7 @@ class _TransactionsViewState extends State<TransactionsView> {
                     ),
                     Icon(
                       transaction["credit"]
-                          ? Icons.arrow_upward
+                          ? Icons.arrow_downward
                           : Icons.arrow_upward,
                       color: transaction["credit"] ? Colors.green : Colors.red,
                       size: 15,
@@ -185,7 +185,7 @@ class _TransactionsViewState extends State<TransactionsView> {
             ));
 
         widgetsList.add(dataWidget);
-        widgetsList.add(const SizedBox(height: 10));
+        widgetsList.add(const SizedBox(height: 15));
       }
 
       mapToWidget[date] = widgetsList;
