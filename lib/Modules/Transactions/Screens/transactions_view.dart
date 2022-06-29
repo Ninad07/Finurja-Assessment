@@ -5,6 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_statusbarcolor_ns/flutter_statusbarcolor_ns.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:syncfusion_flutter_core/theme.dart';
+import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 import '../../../Data/Model/transaction_model.dart';
 import '../../../Logic/TransactionScreenBloc/transaction_screen_bloc.dart';
@@ -282,22 +284,59 @@ class _TransactionsViewState extends State<TransactionsView> {
                 child: Row(
                   children: [
                     Checkbox(
-                      value: state.amountBetween,
+                      value: !(state.startAmount == 0 &&
+                          state.endAmount == 100000),
                       activeColor: Colors.blue.shade800,
                       materialTapTargetSize: MaterialTapTargetSize.padded,
                       onChanged: (val) {},
                     ),
                     const SizedBox(width: 5),
                     Text(
-                        "Amount Between ${state.startAmount} and ${state.endAmount}"),
+                        "Amount Between ${state.startAmount} and ${state.endAmount == 100000 ? "1L+" : state.endAmount}"),
                   ],
                 ),
               ),
+
+              const SizedBox(height: 45),
+              _getRangeSliderWidget(),
             ],
           ),
         ),
       );
     });
+  }
+
+  //? Range Slider
+  Widget _getRangeSliderWidget() {
+    return BlocBuilder<TransactionScreenBloc, TransactionScreenState>(
+      builder: (context, state) {
+        return SizedBox(
+          height: 50,
+          width: MediaQuery.of(context).size.width,
+          child: SfRangeSliderTheme(
+            data: SfRangeSliderThemeData(
+              tooltipBackgroundColor: Colors.blue.shade800,
+            ),
+            child: SfRangeSlider(
+              values: state.values,
+              min: 0,
+              max: 100000,
+              interval: 1000,
+              stepSize: 1000,
+              enableTooltip: true,
+              shouldAlwaysShowTooltip: true,
+              tooltipShape: const SfPaddleTooltipShape(),
+              activeColor: Colors.blue.shade800,
+              onChanged: (dynamic value) {
+                context
+                    .read<TransactionScreenBloc>()
+                    .add(UpdateSliderRanges(value: value));
+              },
+            ),
+          ),
+        );
+      },
+    );
   }
 
   //? Transactions Data

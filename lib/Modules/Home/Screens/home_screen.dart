@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_statusbarcolor_ns/flutter_statusbarcolor_ns.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:syncfusion_flutter_sliders/sliders.dart';
 import '../../../Logic/HomeScreenBloc/home_screen_bloc.dart';
 import 'home_screen_state.dart';
 
@@ -33,6 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    SfRangeValues val = SfRangeValues(100, 1000);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue.shade900,

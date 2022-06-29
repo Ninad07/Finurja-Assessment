@@ -1,11 +1,13 @@
 import 'package:accountsapp/Data/Model/transaction_model.dart';
+import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 class TransactionScreenState {
   TransactionModel transactionModel;
   var datesList;
   var mapToWidget;
   bool latestToOldest, amountBetween, credit, debit;
-  String startAmount, endAmount;
+  int startAmount, endAmount;
+  SfRangeValues values;
   TransactionScreenState({
     required this.transactionModel,
     this.latestToOldest = true,
@@ -14,8 +16,9 @@ class TransactionScreenState {
     this.amountBetween = false,
     this.datesList = const [],
     this.mapToWidget = const [],
-    this.startAmount = "Rs 0",
-    this.endAmount = "Rs 1L+",
+    this.startAmount = 0,
+    this.endAmount = 100,
+    this.values = const SfRangeValues(0, 100000),
   });
 
   TransactionScreenState copyWith({
@@ -28,6 +31,7 @@ class TransactionScreenState {
     var amountBetween,
     var startAmount,
     var endAmount,
+    var values,
   }) {
     return TransactionScreenState(
       transactionModel: transactionModel ?? this.transactionModel,
@@ -39,6 +43,7 @@ class TransactionScreenState {
       amountBetween: amountBetween ?? this.amountBetween,
       startAmount: startAmount ?? this.startAmount,
       endAmount: endAmount ?? this.endAmount,
+      values: values ?? this.values,
     );
   }
 }

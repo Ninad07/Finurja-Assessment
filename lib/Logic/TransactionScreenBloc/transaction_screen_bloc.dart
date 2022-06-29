@@ -11,9 +11,10 @@ class TransactionScreenBloc
   TransactionScreenBloc()
       : super(TransactionScreenState(transactionModel: TransactionModel())) {
     on<LoadData>(_loadData);
+    on<UpdateSliderRanges>(_updateSliderRanges);
   }
 
-  // Load Transactions of a particular user
+  //? Load Transactions of a particular user
   _loadData(LoadData event, Emitter<TransactionScreenState> emit) {
     var transactionsList =
         Transactions().getTransactionsList(event.model.userId);
@@ -96,5 +97,13 @@ class TransactionScreenBloc
         transactionModel: model,
         datesList: datesList,
         mapToWidget: mapToWidget));
+  }
+
+  _updateSliderRanges(
+      UpdateSliderRanges event, Emitter<TransactionScreenState> emit) {
+    emit(state.copyWith(
+        values: event.value,
+        startAmount: (event.value.start).round(),
+        endAmount: (event.value.end).round()));
   }
 }
