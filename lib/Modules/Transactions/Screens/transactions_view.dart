@@ -137,15 +137,102 @@ class _TransactionsViewState extends State<TransactionsView> {
   //? Transactions Data
   Widget _getTransactionsData(TransactionModel model,
       TransactionScreenState state, BuildContext context) {
+    // Pre-Processing
+    var transactions = model.transactions;
+    var datesList = [], mapToWidget = {};
+
+    // Retireve all dates from the map
+    for (String key in transactions.keys) {
+      datesList.add(key);
+    }
+
+    // For building a Map of List which stores the list of widgets storing transaction details to be displayed on accordance with particular dates
+    for (String date in datesList) {
+      List<Widget> widgetsList = [];
+      for (var transaction in transactions[date]!) {
+        var dataWidget = Container(
+            margin: const EdgeInsets.only(left: 10, right: 5),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  transaction["recipient"],
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                Row(
+                  children: [
+                    Text(
+                      "Rs ${transaction["amount"]}",
+                      style: TextStyle(
+                        color:
+                            transaction["credit"] ? Colors.green : Colors.red,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Icon(
+                      transaction["credit"]
+                          ? Icons.arrow_upward
+                          : Icons.arrow_upward,
+                      color: transaction["credit"] ? Colors.green : Colors.red,
+                      size: 15,
+                    )
+                  ],
+                ),
+              ],
+            ));
+
+        widgetsList.add(dataWidget);
+        widgetsList.add(const SizedBox(height: 10));
+      }
+
+      mapToWidget[date] = widgetsList;
+    }
+
     return Expanded(
       child: Container(
         margin: const EdgeInsets.only(left: 10, right: 10, bottom: 5),
         height: MediaQuery.of(context).size.height,
-        color: Colors.grey,
+        // color: Colors.grey,
         child: ListView.builder(
-            itemCount: model.transactions.length,
+            itemCount: datesList.length,
             itemBuilder: (context, int index) {
-              return Container();
+              return Column(
+                children: [
+                  Container(
+                    constraints: const BoxConstraints(
+                      minHeight: 80,
+                    ),
+                    decoration: BoxDecoration(
+                        border: Border(
+                            bottom: BorderSide(color: Colors.grey.shade300))),
+                    width: MediaQuery.of(context).size.width,
+                    // color: Colors.blue,
+                    child: Column(
+                      children: [
+                            Container(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                datesList[index],
+                                textAlign: TextAlign.left,
+                                style: const TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                          ] +
+                          mapToWidget[datesList[index]],
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                ],
+              );
             }),
       ),
     );
