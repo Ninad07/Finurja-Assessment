@@ -1,5 +1,7 @@
 import 'package:accountsapp/Data/Model/account_model.dart';
+import 'package:accountsapp/Logic/TransactionScreenBloc/transaction_screen_bloc.dart';
 import 'package:accountsapp/Modules/Home/Events/home_screen_events.dart';
+import 'package:accountsapp/Modules/Transactions/Screens/transactions_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_statusbarcolor_ns/flutter_statusbarcolor_ns.dart';
@@ -190,7 +192,13 @@ class _HomeScreenState extends State<HomeScreen> {
     return Container(
       alignment: Alignment.centerRight,
       child: TextButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return TransactionsView(
+              model: model,
+            );
+          }));
+        },
         child: Text(
           "View Transactions",
           style: TextStyle(

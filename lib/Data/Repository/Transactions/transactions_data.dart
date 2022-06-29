@@ -194,7 +194,7 @@ class Transactions {
     ],
   };
 
-  getTransactionDetails(int index, String userId) {
-    return transactions[userId]![index];
+  getTransactionsList(String userId) {
+    return transactions[userId] ?? [];
   }
 }

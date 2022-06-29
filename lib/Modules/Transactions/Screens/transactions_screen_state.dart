@@ -1,12 +1,14 @@
+import 'package:accountsapp/Data/Model/transaction_model.dart';
+
 class TransactionScreenState {
-  var transactions;
+  TransactionModel transactionModel;
   TransactionScreenState({
-    this.transactions,
+    required this.transactionModel,
   });
 
-  TransactionScreenState copyWith(var transactions) {
+  TransactionScreenState copyWith({var transactionModel}) {
     return TransactionScreenState(
-      transactions: transactions ?? this.transactions,
+      transactionModel: transactionModel ?? this.transactionModel,
     );
   }
 }
