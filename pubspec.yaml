@@ -38,6 +38,7 @@ dependencies:
   syncfusion_flutter_core:
   flutter_statusbarcolor_ns:
   flutter_bloc:
+  flutter_layout_grid:
 
 dev_dependencies:
   flutter_test:

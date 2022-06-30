@@ -2,6 +2,7 @@ import 'package:accountsapp/Data/Model/account_model.dart';
 import 'package:accountsapp/Modules/Transactions/Screens/transactions_screen_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_layout_grid/flutter_layout_grid.dart';
 import 'package:flutter_statusbarcolor_ns/flutter_statusbarcolor_ns.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -99,9 +100,9 @@ class _TransactionsViewState extends State<TransactionsView> {
   _getFilterWidget(TransactionScreenState state) {
     return Container(
       constraints: const BoxConstraints(
-        minHeight: 130,
+        minHeight: 150,
       ),
-      padding: const EdgeInsets.only(left: 20),
+      padding: const EdgeInsets.only(left: 12, right: 12),
       decoration: BoxDecoration(
           border: Border(bottom: BorderSide(color: Colors.grey.shade300))),
       child: Column(
@@ -144,6 +145,70 @@ class _TransactionsViewState extends State<TransactionsView> {
                     color: Colors.grey.shade800,
                   )),
             ],
+          ),
+          LayoutGrid(
+            columnSizes: const [auto, auto],
+            rowSizes: const [auto, auto],
+            rowGap: 10,
+            columnGap: 12,
+            children: [
+              if (state.latestToOldest)
+                _filterOptionDisplay(
+                    "Latest To Oldest", ToggleTransactionDateFilterValue()),
+              if (!state.latestToOldest)
+                _filterOptionDisplay(
+                    "Oldest To Latest", ToggleTransactionDateFilterValue()),
+              if (state.credit)
+                _filterOptionDisplay("Credit", UpdateCreditFilterValue()),
+              if (state.debit)
+                _filterOptionDisplay("Debit", UpdateDebitFilterValue()),
+              if (state.startAmount > 0 || state.endAmount < 100000)
+                _filterOptionDisplay(
+                    "${state.startAmount > 1000 ? "${state.startAmount / 1000}K" : state.startAmount} to ${state.endAmount > 1000 ? "${state.endAmount / 1000}K" : state.endAmount}",
+                    UpdateSliderRanges(value: SfRangeValues(0, 100000))),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _filterOptionDisplay(String title, TransactionScreenEvent event) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(30),
+        color: Colors.grey.shade200,
+      ),
+      constraints: const BoxConstraints(
+        minWidth: 50,
+      ),
+      height: 35,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Text(
+            title,
+            // overflow: TextOverflow.fade,
+          ),
+          IconButton(
+            onPressed: () {
+              if (event is ToggleTransactionDateFilterValue) {
+                if (!context
+                    .read<TransactionScreenBloc>()
+                    .state
+                    .latestToOldest) {
+                  context.read<TransactionScreenBloc>().add(event);
+                  context.read<TransactionScreenBloc>().add(ApplyFilters());
+                }
+              } else {
+                context.read<TransactionScreenBloc>().add(event);
+                context.read<TransactionScreenBloc>().add(ApplyFilters());
+              }
+            },
+            icon: const Text("X"),
+            hoverColor: Colors.transparent,
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
           ),
         ],
       ),
