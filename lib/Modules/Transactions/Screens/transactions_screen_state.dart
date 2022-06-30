@@ -17,7 +17,7 @@ class TransactionScreenState {
     this.datesList = const [],
     this.mapToWidget = const [],
     this.startAmount = 0,
-    this.endAmount = 100,
+    this.endAmount = 100000,
     this.values = const SfRangeValues(0, 100000),
   });
 

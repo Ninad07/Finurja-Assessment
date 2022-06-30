@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:accountsapp/Data/Model/transaction_model.dart';
 import 'package:accountsapp/Data/Repository/Transactions/transactions_data.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +25,7 @@ class TransactionScreenBloc
   //? Apply All Filters
   _applyFilters(ApplyFilters event, Emitter<TransactionScreenState> emit) {
     var datesList = [];
-    var mapToWidget = {};
+    LinkedHashMap mapToWidget = LinkedHashMap();
     for (String key in state.transactionModel.transactions.keys) {
       datesList.add(key);
     }
@@ -31,20 +33,24 @@ class TransactionScreenBloc
     // Oldest To Latest Filter Selected
     if (!state.latestToOldest) {
       datesList.sort(((a, b) => a.compareTo(b)));
+
+      // Latest To Oldest Filter Selected
     } else {
       datesList.sort(((a, b) => b.compareTo(a)));
     }
 
-    Map<String, List> transactionDataMap = {};
+    // For Sorting on the basis of filters
+    LinkedHashMap<String, List> transactionDataMap = LinkedHashMap();
     for (String date in datesList) {
       List<List> transactionDataList = [];
       for (var transaction in state.transactionModel.transactions[date]!) {
         var list = [
           transaction["recipient"],
           transaction["amount"],
-          transaction["credit"] ? "2" : "1",
+          transaction["credit"] ? "2" : "1", // For the sake of sorting
         ];
 
+        // If Amount range filter is used
         if ((state.startAmount > 0 || state.endAmount < 100000)) {
           if (double.parse(transaction["amount"]) >= state.startAmount &&
               double.parse(transaction["amount"]) <= state.endAmount) {
@@ -57,8 +63,11 @@ class TransactionScreenBloc
 
       if (transactionDataList.isNotEmpty) {
         if (state.credit != state.debit) {
+          // Credit Filter
           if (state.credit) {
             transactionDataList.sort(((a, b) => b[2].compareTo(a[2])));
+
+            // Debit Filter
           } else {
             transactionDataList.sort(((a, b) => a[2].compareTo(b[2])));
           }
@@ -69,9 +78,13 @@ class TransactionScreenBloc
       }
     }
 
-    for (String date in datesList) {
-      if (!transactionDataMap.containsKey(date) ||
-          transactionDataMap[date] == null) continue;
+    // Update the datesList after the filtering is done
+    datesList.clear();
+
+    // Building the Widgets Map for Displaying on the interface
+    for (String date in transactionDataMap.keys) {
+      if (transactionDataMap[date] == null) continue;
+
       List<Widget> widgetsList = [];
       for (var transaction in transactionDataMap[date]!) {
         var dataWidget = Container(
@@ -108,6 +121,7 @@ class TransactionScreenBloc
               ],
             ));
 
+        datesList.add(date);
         widgetsList.add(dataWidget);
         widgetsList.add(const SizedBox(height: 15));
       }
@@ -116,10 +130,6 @@ class TransactionScreenBloc
       mapToWidget[date] = widgetsList;
     }
 
-    datesList.clear();
-    for (String date in mapToWidget.keys) {
-      datesList.add(date);
-    }
     emit(state.copyWith(datesList: datesList, mapToWidget: mapToWidget));
   }
 
@@ -239,6 +249,7 @@ class TransactionScreenBloc
         mapToWidget: mapToWidget));
   }
 
+  //? Update Slider Ranges
   _updateSliderRanges(
       UpdateSliderRanges event, Emitter<TransactionScreenState> emit) {
     emit(state.copyWith(
