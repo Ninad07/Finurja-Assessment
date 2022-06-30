@@ -1,14 +1,10 @@
-import 'package:accountsapp/Data/Model/account_model.dart';
 import 'package:accountsapp/Modules/Transactions/Screens/transactions_screen_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_layout_grid/flutter_layout_grid.dart';
 import 'package:flutter_statusbarcolor_ns/flutter_statusbarcolor_ns.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
-
 import '../../../Data/Model/transaction_model.dart';
 import '../../../Logic/TransactionScreenBloc/transaction_screen_bloc.dart';
 import '../Events/transaction_screen_events.dart';
@@ -26,12 +22,12 @@ class _TransactionsViewState extends State<TransactionsView> {
   void initState() {
     _changeStatusbarColor();
 
-    // Load Transactions Details
+    //? Load Transactions Details
     context.read<TransactionScreenBloc>().add(LoadData(model: widget.model));
     super.initState();
   }
 
-  // Change Status Bar Color Immediately after the activity launches
+  //? Change Status Bar Color Immediately after the activity launches
   _changeStatusbarColor() async {
     await FlutterStatusbarcolor.setStatusBarColor(Colors.blue.shade900);
   }
@@ -96,7 +92,7 @@ class _TransactionsViewState extends State<TransactionsView> {
     );
   }
 
-  // Filter Widget
+  //? Filter Widget
   _getFilterWidget(TransactionScreenState state) {
     return Container(
       constraints: const BoxConstraints(
@@ -165,7 +161,7 @@ class _TransactionsViewState extends State<TransactionsView> {
               if (state.startAmount > 0 || state.endAmount < 100000)
                 _filterOptionDisplay(
                     "${state.startAmount > 1000 ? "${state.startAmount / 1000}K" : state.startAmount} to ${state.endAmount > 1000 ? "${state.endAmount / 1000}K" : state.endAmount}",
-                    UpdateSliderRanges(value: SfRangeValues(0, 100000))),
+                    UpdateSliderRanges(value: const SfRangeValues(0, 100000))),
             ],
           ),
         ],
@@ -173,6 +169,7 @@ class _TransactionsViewState extends State<TransactionsView> {
     );
   }
 
+  //? Display Selected Filters
   Widget _filterOptionDisplay(String title, TransactionScreenEvent event) {
     return Container(
       decoration: BoxDecoration(
@@ -188,10 +185,10 @@ class _TransactionsViewState extends State<TransactionsView> {
         children: [
           Text(
             title,
-            // overflow: TextOverflow.fade,
           ),
           IconButton(
             onPressed: () {
+              // Deselecting the Filters
               if (event is ToggleTransactionDateFilterValue) {
                 if (!context
                     .read<TransactionScreenBloc>()
@@ -240,6 +237,8 @@ class _TransactionsViewState extends State<TransactionsView> {
                     border: Border(
                   bottom: BorderSide(color: Colors.grey.shade300),
                 )),
+
+                // Title
                 child: const Text(
                   "Sort & Filter",
                   style: TextStyle(
@@ -262,6 +261,8 @@ class _TransactionsViewState extends State<TransactionsView> {
                 ),
               ),
               const SizedBox(height: 10),
+
+              // Latest To Oldest Filtering
               SizedBox(
                 height: 20,
                 child: Row(
@@ -286,6 +287,8 @@ class _TransactionsViewState extends State<TransactionsView> {
                 ),
               ),
               const SizedBox(height: 10),
+
+              // Oldest To Latest Filtering
               SizedBox(
                 height: 20,
                 child: Row(
@@ -310,7 +313,7 @@ class _TransactionsViewState extends State<TransactionsView> {
                 ),
               ),
 
-              // Filter By
+              //? Other Filters
               const SizedBox(height: 15),
               Container(
                 margin: const EdgeInsets.only(left: 10),
@@ -325,6 +328,8 @@ class _TransactionsViewState extends State<TransactionsView> {
                 ),
               ),
               const SizedBox(height: 10),
+
+              // Credit Filter
               SizedBox(
                 height: 20,
                 child: Row(
@@ -345,6 +350,8 @@ class _TransactionsViewState extends State<TransactionsView> {
                 ),
               ),
               const SizedBox(height: 10),
+
+              // Debit Filter
               SizedBox(
                 height: 20,
                 child: Row(
@@ -365,6 +372,8 @@ class _TransactionsViewState extends State<TransactionsView> {
                 ),
               ),
               const SizedBox(height: 10),
+
+              // Amount Range Filter
               SizedBox(
                 height: 20,
                 child: Row(
@@ -385,6 +394,7 @@ class _TransactionsViewState extends State<TransactionsView> {
 
               const SizedBox(height: 45),
               _getRangeSliderWidget(),
+
               const SizedBox(height: 10),
               _getApplyResetButtonWidget(),
             ],
@@ -399,6 +409,7 @@ class _TransactionsViewState extends State<TransactionsView> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
+        // Reset Filters
         Container(
           height: 50,
           width: MediaQuery.of(context).size.width / 2.5,
@@ -420,6 +431,8 @@ class _TransactionsViewState extends State<TransactionsView> {
             ),
           ),
         ),
+
+        // Apply Filters
         Container(
           height: 50,
           width: MediaQuery.of(context).size.width / 2.5,
@@ -484,12 +497,12 @@ class _TransactionsViewState extends State<TransactionsView> {
       child: Container(
         margin: const EdgeInsets.only(left: 10, right: 10, bottom: 5),
         height: MediaQuery.of(context).size.height,
-        // color: Colors.grey,
         child: ListView.builder(
             physics: const BouncingScrollPhysics(),
             itemCount:
                 context.read<TransactionScreenBloc>().state.datesList.length,
             itemBuilder: (context, int index) {
+              // Retrieve Widgets List from the current State
               var widgetsList = context
                       .read<TransactionScreenBloc>()
                       .state

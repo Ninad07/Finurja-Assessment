@@ -1,12 +1,9 @@
 import 'package:accountsapp/Data/Model/account_model.dart';
-import 'package:accountsapp/Logic/TransactionScreenBloc/transaction_screen_bloc.dart';
 import 'package:accountsapp/Modules/Home/Events/home_screen_events.dart';
 import 'package:accountsapp/Modules/Transactions/Screens/transactions_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_statusbarcolor_ns/flutter_statusbarcolor_ns.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 import '../../../Logic/HomeScreenBloc/home_screen_bloc.dart';
 import 'home_screen_state.dart';
@@ -22,19 +19,18 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     _changeStatusbarColor();
-    // Load accounts data
+    //? Load accounts data
     context.read<HomeScreenBloc>().add(LoadData());
     super.initState();
   }
 
-  // Change Status Bar Color Immediately after the activity launches
+  //? Change Status Bar Color Immediately after the activity launches
   _changeStatusbarColor() async {
     await FlutterStatusbarcolor.setStatusBarColor(Colors.blue.shade900);
   }
 
   @override
   Widget build(BuildContext context) {
-    SfRangeValues val = SfRangeValues(100, 1000);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue.shade900,
@@ -55,12 +51,13 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Scaffold Body
+  //? Scaffold Body
   Widget _body() {
     return BlocBuilder<HomeScreenBloc, HomeScreenState>(
       builder: (context, state) {
         // Get List of Account Models loaded initially
         List accountModelList = state.accounts;
+
         return SizedBox(
           child: ListView.builder(
             physics: const BouncingScrollPhysics(),
@@ -114,7 +111,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Returns Logo Image and Bank Name Wrapped in a widget
+  //? Returns Logo Image and Bank Name Wrapped in a widget
   Widget _getLogoNameDetails(AccountModel model) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -136,7 +133,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Returns Account Number, Account Type and Account Balance wrapped in a Widget
+  //? Returns Account Number, Account Type and Account Balance wrapped in a Widget
   Widget _getAccountNumberBalanceDetails(AccountModel model) {
     return Container(
       constraints: const BoxConstraints(
@@ -189,7 +186,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // View Transactions Button
+  //? View Transactions Button
   Widget _getTransactionDetailsButton(AccountModel model) {
     return Container(
       alignment: Alignment.centerRight,

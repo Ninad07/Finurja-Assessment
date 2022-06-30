@@ -15,7 +15,7 @@ class UpdateSliderRanges extends TransactionScreenEvent {
   UpdateSliderRanges({required this.value});
 }
 
-// Update CheckBox Values
+//? Update CheckBox Values
 //? Update Transaction Date Filter value
 class ToggleTransactionDateFilterValue extends TransactionScreenEvent {
   ToggleTransactionDateFilterValue();

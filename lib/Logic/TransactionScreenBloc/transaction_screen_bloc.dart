@@ -126,6 +126,7 @@ class TransactionScreenBloc
         widgetsList.add(const SizedBox(height: 15));
       }
 
+      // Adding Data in the Widgets Map
       widgetsList.add(const SizedBox(height: 10));
       mapToWidget[date] = widgetsList;
     }
@@ -239,6 +240,7 @@ class TransactionScreenBloc
         widgetsList.add(const SizedBox(height: 15));
       }
 
+      // Adding Data in the Widgets Map
       widgetsList.add(const SizedBox(height: 10));
       mapToWidget[date] = widgetsList;
     }

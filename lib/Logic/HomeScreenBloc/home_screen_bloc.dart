@@ -7,10 +7,9 @@ import '../../Modules/Home/Screens/home_screen_state.dart';
 class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState> {
   HomeScreenBloc() : super(HomeScreenState()) {
     on<LoadData>(_loadData);
-    on<ViewTransactions>(_viewTransactions);
   }
 
-  // Load Bank Account Details Initially
+  //? Load Bank Account Details Initially
   _loadData(LoadData event, Emitter<HomeScreenState> emit) async {
     var accountDetails = Accounts().getAllAccountDetails();
     var accountModelList = [];
@@ -30,7 +29,4 @@ class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState> {
 
     emit(state.copyWith(accounts: accountModelList));
   }
-
-  // Load Particular Transaction Details
-  _viewTransactions(ViewTransactions event, Emitter<HomeScreenState> emit) {}
 }
